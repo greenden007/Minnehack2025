@@ -1,12 +1,23 @@
-const express = require("express");
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
+const port = process.env.PORT || 5000;
+
 const app = express();
-const port = 3000;
 
-const mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://rcherukuri10:0aLj4vyyOjmrBP2U@voluntier.i8pxd.mongodb.net/?retryWrites=true&w=majority&appName=VolunTier");
+app.use(cors());
+app.use(express.json());
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
-db.once("open", function () {
-    console.log("Connected to MongoDB");
+mongoose.connect("mongodb+srv://rcherukuri10:9YfOd0A9qo7fUkyo@voluntier.i8pxd.mongodb.net/?retryWrites=true&w=majority&appName=VolunTier", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 })
+.then(() => console.log('Connected to MongoDB'))
+.catch((err) =>console.error('Error connecting to MongoDB:', err));
+
+app.use('/api/auth', require('./routes/auth'));
+
+const PORT = process.env.PORT || 5050;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
