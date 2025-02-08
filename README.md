@@ -41,7 +41,6 @@ VolunTier is a mobile app that focuses on volunteering within a community. It ai
 - Pull requests required for merging into dev and main branches
 - Code review process before merging
 - Consistent coding style and documentation
-- Regular team meetings for progress updates and planning
 
 ## Contact
 Name: Idan Talker
