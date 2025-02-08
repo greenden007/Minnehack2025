@@ -1,6 +1,8 @@
 # Minnehack2025
 
-## Volunteer app
+## VolunTier
+
+### ProjectFeatures/Goals
 - One user can generate a volunteer event
 - Other users can apply/join as part to help out
 - This system is then gamified into a leaderboard within the local community (for example MSP downtown, Edina, etc.) to do goodwill
@@ -10,3 +12,9 @@
 - Where resources can be found (freshwater/food shipments into local businesses) 
 - Emergency situation posting if help is needed from the general public (clearing up wreckage).
 - Mobile interface: Swift, Backend: MongoDB, Express, Node
+
+### Roadmap
+- 
+
+### Project Standards
+- 
