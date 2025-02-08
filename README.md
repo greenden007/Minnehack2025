@@ -1,20 +1,54 @@
-# Minnehack2025
+# Minnehack2025 - VolunTier
 
-## VolunTier
+## Project Overview
+VolunTier is a mobile app that focuses on volunteering within a community. It aims to connect volunteers with local events, gamify the volunteering experience, and provide critical information during emergencies.
 
-### ProjectFeatures/Goals
-- One user can generate a volunteer event
-- Other users can apply/join as part to help out
-- This system is then gamified into a leaderboard within the local community (for example MSP downtown, Edina, etc.) to do goodwill
-- Will set this up as a 401(c)3 business so that we can accept donations and reimburse top performers in volunteering by community
-- Need: Either mobile interface, or web interface. Backend: MongoDB, express, node
-- Which roads are closed/where traffic will build up 
-- Where resources can be found (freshwater/food shipments into local businesses) 
-- Emergency situation posting if help is needed from the general public (clearing up wreckage).
-- Mobile interface: Swift, Backend: MongoDB, Express, Node
+## Project Features/Goals
+- Users can generate and join volunteer events
+- Gamified leaderboard system for local communities (e.g., MSP downtown, Edina)
+- Set up as a 401(c)3 business to accept donations and reimburse top volunteers
+- Disaster response features:
+  - Information on road closures and traffic build-up
+  - Location of resources (freshwater/food shipments to local businesses)
+  - Emergency situation posting for public assistance (e.g., clearing wreckage)
+- User profile creation and management
+- Search functionality for volunteering opportunities
+- Event calendar for tracking volunteer activities
+- Goal setting and progress tracking
+- Badge system for recognizing volunteer achievements
 
-### Roadmap
-- 
+## Technologies
+- MongoDB: Database for storing user information, events, and community data
+- JavaScript: Primary programming language
+- React Native: Framework for cross-platform mobile app development
+- NestJS: Backend framework for building efficient and scalable server-side applications
+- Expo: Tool for easier React Native development and deployment
 
-### Project Standards
-- 
+## Roadmap
+1. Develop core functionality (user authentication, event creation/joining)
+2. Implement gamification features (leaderboard, badges)
+3. Create disaster response modules
+4. Integrate payment system for donations
+5. Develop and refine user interface
+6. Beta testing and community feedback
+7. Official launch and marketing
+8. Continuous improvement and feature additions based on user feedback
+
+## Project Standards
+- Main branch for stable releases
+- Dev branch under main for ongoing development
+- Feature branches of form feature/[branch_name]
+- Pull requests required for merging into dev and main branches
+- Code review process before merging
+- Consistent coding style and documentation
+- Regular team meetings for progress updates and planning
+
+## Contact
+Name: Idan Talker
+Email: talkeridan@gmail.com
+Phone Number: +1 (669) 310-7297
+
+Name: Rohan Cherukuri
+Email: cheru052@umn.edu
+Phone: +1 (630) 366-9518
+
