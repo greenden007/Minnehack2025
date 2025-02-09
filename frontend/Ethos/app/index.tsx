@@ -1,65 +1,43 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Image, ImageBackground } from 'react-native';
-import { Text, Button, Card, Icon } from '@rneui/themed';
-import { Link, useRouter } from 'expo-router';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import FeaturedOpportunities from '../components/FeaturedOpportunities';
-import RecentActivity from '../components/RecentActivity';
-import { useAuth } from '../hooks/useAuth';
+import { useRouter } from 'expo-router';
 
-export default function Home() {
-  const { user } = useAuth();
+export default function Index() {
   const router = useRouter();
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <ImageBackground
-          source={require('../assets/images/background.jpeg')}
-          style={styles.header}
+      <View style={styles.content}>
+        <Image
+          source={require('../assets/images/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <Text style={styles.title}>Welcome to Ethos</Text>
+        <Text style={styles.subtitle}>Empowering Communities Through Volunteering</Text>
+        
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/login')}
         >
-          <Image 
-            source={require('../assets/images/logo.png')} 
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text h1 style={styles.welcome}>ETHOS</Text>
-          <Text style={styles.tagline}>Empowering Communities Through Volunteering</Text>
-        </ImageBackground>
-
-        {user ? (
-          <View style={styles.userGreeting}>
-            <Icon name="person" color="#4CAF50" size={24} />
-            <Text style={styles.greetingText}>Welcome back, {user.name}!</Text>
-          </View>
-        ) : (
-          <Link href="/login" asChild>
-            <Button
-              title="Log In"
-              icon={<Icon name="login" color="#ffffff" />}
-              buttonStyle={styles.loginButton}
-            />
-          </Link>
-        )}
-
-        <Card containerStyle={styles.card}>
-          <Card.Title>Make a Difference Today</Card.Title>
-          <Card.Divider />
-          <Text style={styles.cardText}>
-            Find volunteering opportunities in your community and start making an impact.
-          </Text>
-          <Button
-            title="Explore Opportunities"
-            icon={<Icon name="search" color="#ffffff" />}
-            onPress={() => router.push('/(tabs)/opportunities')}
-            containerStyle={styles.buttonContainer}
-            buttonStyle={styles.exploreButton}
-          />
-        </Card>
-
-        <FeaturedOpportunities />
-        <RecentActivity />
-      </ScrollView>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={[styles.button, styles.secondaryButton]}
+          onPress={() => router.push('/signup')}
+        >
+          <Text style={[styles.buttonText, styles.secondaryButtonText]}>Sign Up</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={styles.exploreLink}
+          onPress={() => router.push('/(tabs)/home')}
+        >
+          <Text style={styles.exploreLinkText}>Explore as Guest</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -69,72 +47,55 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  header: {
-    padding: 20,
-    alignItems: 'center',
+  content: {
+    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
+    width: 150,
+    height: 150,
+    marginBottom: 20,
   },
-  welcome: {
-    color: '#FFFFFF',
-    textAlign: 'center',
+  title: {
+    fontSize: 28,
     fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 10
-  },
-  tagline: {
-    color: '#FFFFFF',
-    textAlign: 'center',
-    fontSize: 16,
-    fontStyle: 'italic',
-    marginTop: 5,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 10
-  },
-  userGreeting: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 15,
-    backgroundColor: '#E8F5E9',
-    marginHorizontal: 20,
-    marginTop: 20,
-    borderRadius: 10,
-  },
-  greetingText: {
-    marginLeft: 10,
-    fontSize: 16,
+    marginBottom: 10,
     color: '#4CAF50',
   },
-  loginButton: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 25,
-    marginHorizontal: 20,
-    marginTop: 20,
-  },
-  card: {
-    borderRadius: 10,
-    marginHorizontal: 20,
-    marginTop: 20,
-  },
-  cardText: {
-    marginBottom: 10,
+  subtitle: {
+    fontSize: 18,
     textAlign: 'center',
+    marginBottom: 30,
+    color: '#666',
   },
-  buttonContainer: {
-    marginTop: 15,
-  },
-  exploreButton: {
-    backgroundColor: '#FFC107',
+  button: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 40,
     borderRadius: 25,
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  secondaryButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#4CAF50',
+  },
+  secondaryButtonText: {
+    color: '#4CAF50',
+  },
+  exploreLink: {
+    marginTop: 20,
+  },
+  exploreLinkText: {
+    color: '#4CAF50',
+    fontSize: 16,
+    textDecorationLine: 'underline',
   },
 });
-
-
-

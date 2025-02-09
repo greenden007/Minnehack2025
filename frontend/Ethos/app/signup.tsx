@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { registerUser } from '../services/userService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User, AuthResponse } from '../types/User';
+
 
 export default function Signup() {
   const [firstName, setFirstName] = useState('');
@@ -36,6 +40,12 @@ export default function Signup() {
       // const response = await api.signup({ firstName, lastName, email, password });
       
       // Placeholder for successful signup
+      // Replace this with actual API call when ready
+      const response: AuthResponse = await registerUser(firstName, lastName, email, password);
+
+      // Save user ID and token to AsyncStorage
+      await AsyncStorage.setItem('userId', response.user.id);
+      await AsyncStorage.setItem('userToken', response.token);
       console.log('Signup successful:', { firstName, lastName, email });
       Alert.alert('Success', 'Account created successfully!', [
         { text: 'OK', onPress: () => router.replace('/(tabs)/home') }

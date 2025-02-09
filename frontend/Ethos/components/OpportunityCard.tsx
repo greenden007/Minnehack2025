@@ -1,34 +1,38 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-interface Opportunity {
-  id: string;
-  title: string;
-  organization: string;
-  date: string;
-  tags?: string[];
-}
+import { Opportunity } from '../types/Opportunity'; // Adjust the import path as needed
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
+  onPress?: (opportunity: Opportunity) => void;
 }
 
-const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity }) => {
+const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity, onPress }) => {
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={() => onPress && onPress(opportunity)}>
       <View style={styles.header}>
         <Text style={styles.title}>{opportunity.title}</Text>
         <Ionicons name="bookmark-outline" size={24} color="#4CAF50" />
       </View>
-      <Text style={styles.organization}>{opportunity.organization}</Text>
-      <Text style={styles.date}>{opportunity.date}</Text>
+      <Text style={styles.description}>{opportunity.description}</Text>
+      <Text style={styles.location}>{opportunity.location}</Text>
+      <Text style={styles.date}>
+        {new Date(opportunity.startDate).toLocaleDateString()} at {opportunity.startTime}
+      </Text>
+      <Text style={styles.duration}>Duration: {opportunity.duration}</Text>
       <View style={styles.tags}>
-        {opportunity.tags?.map((tag, index) => (
-          <View key={index} style={styles.tag}>
-            <Text style={styles.tagText}>{tag}</Text>
-          </View>
-        ))}
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>{opportunity.category}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Age {opportunity.minimumAge}+</Text>
+        </View>
+        <View style={[styles.tag, { backgroundColor: opportunity.status === 'Open' ? '#E8F5E9' : '#E3F2FD' }]}>
+          <Text style={[styles.tagText, { color: opportunity.status === 'Open' ? '#4CAF50' : '#2196F3' }]}>
+            {opportunity.status}
+          </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -56,14 +60,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  organization: {
-    fontSize: 16,
+  description: {
+    fontSize: 14,
     color: '#666',
+    marginBottom: 5,
+  },
+  location: {
+    fontSize: 14,
+    color: '#888',
+    marginBottom: 5,
   },
   date: {
     fontSize: 14,
     color: '#888',
-    marginTop: 5,
+    marginBottom: 5,
+  },
+  duration: {
+    fontSize: 14,
+    color: '#888',
+    marginBottom: 5,
   },
   tags: {
     flexDirection: 'row',

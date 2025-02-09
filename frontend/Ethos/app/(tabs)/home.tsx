@@ -23,18 +23,14 @@ export default function HomeScreen() {
   // Placeholder for data fetching
   const user: User = {
     id: '1',
-    email: string;
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    dateOfBirth: string; // ISO 8601 format
-    address: string;
-    bio: string;
-    volunteeringStats: {
-      totalHours: number;
-      completedOpportunities: number;
-      upcomingOpportunities: number;
-    };
+    email: 'user@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    age: 30,
+    address: '123 Main St, Anytown, USA',
+    totalHours: 50,
+    completedOpportunities: 5,
+    plannedOpportunities: 2,
   };
   
   const featuredOpportunities: Opportunity[] = [];
@@ -46,7 +42,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.welcomeText}>Welcome back, {user.name}!</Text>
+          <Text style={styles.welcomeText}>Welcome back, {user.firstName}!</Text>
           <TouchableOpacity style={styles.notificationIcon}>
             <Ionicons name="notifications-outline" size={24} color="#4CAF50" />
           </TouchableOpacity>
@@ -67,13 +63,6 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
-          {recentActivities.map((activity) => (
-            <ActivityItem key={activity.id} activity={activity} />
-          ))}
-        </View>
-
         <TouchableOpacity 
           style={styles.impactButton}
           onPress={() => router.push('/profile')}
@@ -84,6 +73,8 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   safeArea: {

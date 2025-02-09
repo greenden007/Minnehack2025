@@ -1,6 +1,6 @@
 // services/userServices.tsx
 
-import { User } from '../types/User';
+import { User, AuthResponse } from '../types/User';
 
 /**
  * Fetches the user profile for a given user ID.
@@ -18,15 +18,6 @@ export const fetchUserProfile = async (userId: string): Promise<User> => {
  * @returns A Promise that resolves to the updated User object.
  */
 export const updateUserProfile = async (userId: string, data: Partial<User>): Promise<User> => {
-  // Implementation here
-};
-
-/**
- * Retrieves the volunteering history for a given user.
- * @param userId The ID of the user whose history to fetch.
- * @returns A Promise that resolves to an array of volunteering history items.
- */
-export const getUserVolunteeringHistory = async (userId: string): Promise<any[]> => {
   // Implementation here
 };
 
@@ -54,7 +45,7 @@ export const logout = async (): Promise<void> => {
  * @param userData The data for the new user.
  * @returns A Promise that resolves to the newly created User object.
  */
-export const registerUser = async (userData: Partial<User>): Promise<User> => {
+export const registerUser = async (string: firstName, string: lastName, email: string, password: string): Promise<AuthResponse> => {
   // Implementation here
 };
 
@@ -64,6 +55,6 @@ export const registerUser = async (userData: Partial<User>): Promise<User> => {
  * @param password The user's password.
  * @returns A Promise that resolves to an object containing the authentication token.
  */
-export const login = async (email: string, password: string): Promise<{ token: string }> => {
+export const login = async (email: string, password: string): Promise<AuthResponse> => {
   // Implementation here
 };
