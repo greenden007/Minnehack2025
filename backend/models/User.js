@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     location: { type: String, required: true },
-    age: { type: Number, required: true },
+    age: { type: Number, default: 0 },
     volunteerHours: { type: Number, default: 0 },
     completedOpportunities: { type: Number, default: 0 },
     plannedOpportunities: { type: Number, default: 0 },

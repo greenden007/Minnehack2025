@@ -57,6 +57,22 @@ router.put('/update-location', auth, async (req, res) => {
     }
 });
 
+// Update age
+router.put('/update-age', auth, async (req, res) => {
+    const { userId, newAge } = req.body;
+
+    if (!userId || !newAge) {
+        return res.status(400).send({ message: "User ID and new age are required" });
+    }
+
+    try {
+        const result = await User.updateAge(userId, newAge);
+        return res.status(200).json({ message: "Age updated" });
+    } catch (err) {
+        return res.status(500).send({ message: "Server error" });
+    }
+});
+
 // Get user stats
 router.get('/stats', auth, async (req, res) => {
     try {
