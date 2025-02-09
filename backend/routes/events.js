@@ -10,7 +10,7 @@ const googleMapsClient = new Client({});
 // Create a new event
 router.post('/', auth, async (req, res) => {
     try {
-        const { title, description, location, date, startTime, endTime, maxParticipants, category } = req.body;
+        const { title, description, location, date, startTime, duration, maxParticipants, category, minAge } = req.body;
         
         // Geocode the location
         try {
@@ -34,7 +34,8 @@ router.post('/', auth, async (req, res) => {
                 endTime,
                 maxParticipants,
                 category,
-                hoursWorth:endTime - startTime,
+                hoursWorth: duration,
+                minAge: minAge,
                 creator: req.user.id,
                 participants: [req.user.id]
             });
@@ -84,8 +85,34 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// Get all events posted by current user
+router.get('/my-events', auth, async (req, res) => {
+    try {
+        const events = await Event.find({ creator: req.user.id })
+            .populate('creator', ['firstName', 'lastName'])
+            .populate('participants', ['firstName', 'lastName'])
+            .sort({ date: 1 });
+        res.json(events);
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
+// Get all events that the current user is a participant of
+router.get('/my-p-events', auth, async (req, res) => {
+    try {
+        const events = await Event.find({ participants: req.user.id })
+            .populate('creator', ['firstName', 'lastName'])
+            .populate('participants', ['firstName', 'lastName'])
+            .sort({ date: 1 });
+        res.json(events);
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
 // Get nearby events (within 20 mile radius)
-router.get('/nearby', async (req, res) => {
+router.get('/nearby', auth, async (req, res) => {
     try {
         const { address } = req.query;
         
