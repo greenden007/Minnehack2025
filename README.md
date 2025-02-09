@@ -1,4 +1,4 @@
-# Minnehack2025 - VolunTier
+# Minnehack2025 - Ethos
 
 ## Project Overview
 VolunTier is a mobile app that focuses on volunteering within a community. It aims to connect volunteers with local events, gamify the volunteering experience, and provide critical information during emergencies.
