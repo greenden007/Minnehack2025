@@ -1,39 +1,81 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
+import React from 'react';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { useColorScheme } from 'react-native';
+import { ThemeProvider, createTheme } from '@rneui/themed';
+import { useFonts, Raleway_400Regular, Raleway_700Bold } from '@expo-google-fonts/raleway';
+import * as SplashScreen from 'expo-splash-screen';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+const lightTheme = createTheme({
+  lightColors: {
+    primary: '#4CAF50',
+    secondary: '#FFC107',
+    background: '#F5F5F5',
+  },
+  components: {
+    Text: {
+      style: {
+        fontFamily: 'Raleway_400Regular',
+      },
+    },
+  },
+});
+
+const darkTheme = createTheme({
+  darkColors: {
+    primary: '#81C784',
+    secondary: '#FFD54F',
+    background: '#212121',
+  },
+  components: {
+    Text: {
+      style: {
+        fontFamily: 'Raleway_400Regular',
+      },
+    },
+  },
+});
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
+
+  let [fontsLoaded] = useFonts({
+    Raleway_400Regular,
+    Raleway_700Bold,
   });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+  React.useEffect(() => {
+    async function prepare() {
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
     }
-  }, [loaded]);
+    prepare();
+  }, [fontsLoaded]);
 
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+    <ThemeProvider theme={theme}>
+      <SafeAreaProvider>
+        <StatusBar style="auto" />
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="index" options={{ title: 'Home' }} />
+          <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="signup" options={{ headerShown: false }} />
+          <Stack.Screen name="opportunities" options={{ title: 'Opportunities' }} />
+          <Stack.Screen name="settings" options={{ title: 'Settings' }} />
+          <Stack.Screen name="post" options={{ title: 'Create Post' }} />
+          <Stack.Screen name="profile" options={{ title: 'Profile' }} />
+        </Stack>
+      </SafeAreaProvider>
     </ThemeProvider>
   );
 }

@@ -1,32 +1,63 @@
-import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function NotFound() {
+  const router = useRouter();
 
-export default function NotFoundScreen() {
   return (
-    <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <ThemedView style={styles.container}>
-        <ThemedText type="title">This screen doesn't exist.</ThemedText>
-        <Link href="/" style={styles.link}>
-          <ThemedText type="link">Go to home screen!</ThemedText>
-        </Link>
-      </ThemedView>
-    </>
+    <View style={styles.container}>
+      <Ionicons name="alert-circle-outline" size={100} color="#FF6B6B" />
+      <Text style={styles.title}>Oops! Page Not Found</Text>
+      <Text style={styles.message}>
+        The page you're looking for doesn't exist or has been moved.
+      </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.replace('/(tabs)/home')}
+      >
+        <Ionicons name="home-outline" size={24} color="#FFFFFF" />
+        <Text style={styles.buttonText}>Go to Home</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
     padding: 20,
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  message: {
+    fontSize: 16,
+    color: '#666666',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
 });
+
