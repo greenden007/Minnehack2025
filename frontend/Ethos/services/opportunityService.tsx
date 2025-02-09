@@ -31,7 +31,7 @@ export const fetchOpportunities = async (token: string): Promise<OpportunityList
 export const createOpportunity = async (data: Opportunity, token: string) => {
 // Implement API call to create an opportunity
     try {
-        const response = await fetch("https://bc62-2607-ea00-107-3407-8839-b7fb-e949-d27c.ngrok-free.app/api/events", {
+        const response = await fetch("https://bc62-2607-ea00-107-3407-8839-b7fb-e949-d27c.ngrok-free.app/api/events/", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -41,14 +41,14 @@ export const createOpportunity = async (data: Opportunity, token: string) => {
         })
     
         if (response.status === 200) {
-          console.log('Retrieved user profile successfully');
+          console.log('Created event profile successfully');
           const data = await response.json();
           return data;
         } else {
-          throw new Error(`Failed to retrive user. Status: ${response.status}`);
+          throw new Error(`Failed to create event. Status: ${response.status}`);
         }
       } catch (error) {
-        console.error('Error retriving user:', error);
+        console.error('Error creating event:', error);
         throw error;
       }
 };
