@@ -2,29 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { User } from '../../types/User';
+import { Opportunity } from '../../types/Opportunity';
 
 import VolunteerStats from '../../components/VolunteerStats';
 import OpportunityCard from '../../components/OpportunityCard';
 import ActivityItem from '../../components/ActivityItem';
-
-interface User {
-  name: string;
-  totalHours: number;
-  rank: string;
-  categories: {
-    name: string;
-    hours: number;
-    color: string;
-  }[];
-}
-
-interface Opportunity {
-  id: string;
-  title: string;
-  organization: string;
-  date: string;
-  tags?: string[];
-}
 
 interface Activity {
   id: string;
@@ -39,14 +22,19 @@ export default function HomeScreen() {
 
   // Placeholder for data fetching
   const user: User = {
-    name: 'John Doe',
-    totalHours: 120,
-    rank: 'Silver Volunteer',
-    categories: [
-      { name: 'Environmental', hours: 50, color: '#66BB6A' },
-      { name: 'Social', hours: 40, color: '#42A5F5' },
-      { name: 'Educational', hours: 30, color: '#FFA726' },
-    ]
+    id: '1',
+    email: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    dateOfBirth: string; // ISO 8601 format
+    address: string;
+    bio: string;
+    volunteeringStats: {
+      totalHours: number;
+      completedOpportunities: number;
+      upcomingOpportunities: number;
+    };
   };
   
   const featuredOpportunities: Opportunity[] = [];

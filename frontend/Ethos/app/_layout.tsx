@@ -71,7 +71,6 @@ export default function RootLayout() {
           <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="signup" options={{ headerShown: false }} />
           <Stack.Screen name="opportunities" options={{ title: 'Opportunities' }} />
-          <Stack.Screen name="settings" options={{ title: 'Settings' }} />
           <Stack.Screen name="post" options={{ title: 'Create Post' }} />
           <Stack.Screen name="profile" options={{ title: 'Profile' }} />
         </Stack>
