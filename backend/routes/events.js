@@ -10,7 +10,7 @@ const googleMapsClient = new Client({});
 // Create a new event
 router.post('/', auth, async (req, res) => {
     try {
-        const { title, description, location, date, startTime, duration, maxParticipants, category, minAge } = req.body;
+        const { title, description, location, date, startTime, duration, maxParticipants, minAge } = req.body;
         
         // Geocode the location
         try {
@@ -33,7 +33,6 @@ router.post('/', auth, async (req, res) => {
                 startTime,
                 endTime,
                 maxParticipants,
-                category,
                 hoursWorth: duration,
                 minAge: minAge,
                 creator: req.user.id,
@@ -46,6 +45,18 @@ router.post('/', auth, async (req, res) => {
             console.error('Geocoding error:', error);
             return res.status(400).json({ msg: 'Error processing location' });
         }
+        
+        User.findById(req.user.id).then(user => {
+            if (!user) {
+                return console.error("User not found");
+            }
+        
+            user.volunteerHours += duration; 
+            user.plannedOpportunities += 1; 
+            user.save()
+                .then(() => console.log("User volunteer stats updated"))
+                .catch(err => console.error("Error saving user:", err));
+        });
     } catch (err) {
         console.error('Server error:', err);
         res.status(500).send('Server Error');
@@ -238,6 +249,21 @@ router.post('/:id/join', auth, async (req, res) => {
             .populate('participants', ['firstName', 'lastName']);
 
         res.json(updatedEvent);
+
+        User.findById(req.user.id).then(user => {
+            if (!user) {
+                return console.error("User not found");
+            }
+        
+            user.volunteerHours += duration;  // ✅ Update volunteerHours
+            user.completedOpportunities += 1; // ✅ Increment completedOpportunities
+        
+            user.save()
+                .then(() => console.log("User volunteer stats updated"))
+                .catch(err => console.error("Error saving user:", err));
+        });
+
+
     } catch (err) {
         res.status(500).send('Server Error');
     }
