@@ -1,7 +1,7 @@
 // File: types/opportunity.ts
 
   
-  export type OpportunityStatus = 'Open' | 'Completed';
+  export type OpportunityStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
   
   export interface Opportunity {
     id: string;
@@ -15,6 +15,7 @@
     category: string;
     status: OpportunityStatus;
     minimumAge: number;
+    requiredSkills: string;
   }
 
   export interface OpportunityList {

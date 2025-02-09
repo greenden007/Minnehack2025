@@ -18,7 +18,7 @@ const OpportunityItem: React.FC<{ opportunity: Opportunity }> = ({ opportunity }
       <Text style={styles.opportunityDetails}>Duration: {opportunity.duration}</Text>
       <View style={styles.categoryContainer}>
         <Text style={styles.category}>{opportunity.category}</Text>
-        <Text style={[styles.status, { color: opportunity.status === 'Open' ? '#4CAF50' : '#F44336' }]}>
+        <Text style={[styles.status, { color: opportunity.status === 'upcoming' ? '#4CAF50' : '#F44336' }]}>
           {opportunity.status}
         </Text>
       </View>

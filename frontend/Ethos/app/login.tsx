@@ -42,9 +42,6 @@ export default function Login() {
         await AsyncStorage.setItem('userId', response.user.id);
         await AsyncStorage.setItem('userToken', response.token);
         console.log('Login successful:', { email });
-        Alert.alert('Success', 'Account logged into successfully!', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)/home') }
-        ]);
         router.replace('/(tabs)/home');
       }
     } catch (error) {

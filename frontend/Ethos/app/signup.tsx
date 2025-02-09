@@ -51,9 +51,7 @@ export default function Signup() {
         await AsyncStorage.setItem('userId', response.user.id);
         await AsyncStorage.setItem('userToken', response.token);
         console.log('Signup successful:', { firstName, lastName, email });
-        Alert.alert('Success', 'Account created successfully!', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)/home') }
-        ]);
+        router.replace('/(tabs)/home');
       }
     } catch (error) {
       console.error('Signup error:', error);
