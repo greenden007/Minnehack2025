@@ -10,7 +10,7 @@ const googleMapsClient = new Client({});
 // Create a new event
 router.post('/', auth, async (req, res) => {
     try {
-        const { title, description, location, date, startTime, endTime, maxParticipants, category, hoursWorth } = req.body;
+        const { title, description, location, date, startTime, endTime, maxParticipants, category } = req.body;
         
         // Geocode the location
         try {
@@ -34,7 +34,7 @@ router.post('/', auth, async (req, res) => {
                 endTime,
                 maxParticipants,
                 category,
-                hoursWorth,
+                hoursWorth:endTime - startTime,
                 creator: req.user.id,
                 participants: [req.user.id]
             });

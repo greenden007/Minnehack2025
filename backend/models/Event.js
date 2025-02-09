@@ -7,7 +7,7 @@ const eventSchema = new mongoose.Schema({
   },
   description: { 
     type: String, 
-    required: true 
+    required: true
   },
   location: { 
     type: String, 
@@ -21,8 +21,8 @@ const eventSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
-  endTime: { 
-    type: String, 
+  duration: {
+    type: Number, 
     required: true 
   },
   maxParticipants: { 
@@ -54,6 +54,13 @@ const eventSchema = new mongoose.Schema({
   hoursWorth: { 
     type: Number, 
     required: true 
+  },
+  minAge: {
+    type: Number,
+    default: 8
+  },
+  reqSkills: {
+    type: String
   }
 });
 
