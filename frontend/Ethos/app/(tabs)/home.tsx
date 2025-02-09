@@ -1,73 +1,82 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { User } from '../../types/User';
-import { Opportunity } from '../../types/Opportunity';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
+import { fetchUserProfile } from '../../services/userService'; // Adjust the import path as needed
+import { User } from '../../types/User'; // Adjust the import path as needed
 
-import VolunteerStats from '../../components/VolunteerStats';
-import OpportunityCard from '../../components/OpportunityCard';
-import ActivityItem from '../../components/ActivityItem';
-
-interface Activity {
-  id: string;
-  type: 'completed' | 'upcoming';
-  title: string;
-  date: string;
-  hours?: number;
-}
-
-export default function HomeScreen() {
+export default function Home() {
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
 
-  // Placeholder for data fetching
-  const user: User = {
-    id: '1',
-    email: 'user@example.com',
-    firstName: 'John',
-    lastName: 'Doe',
-    age: 30,
-    address: '123 Main St, Anytown, USA',
-    totalHours: 50,
-    completedOpportunities: 5,
-    plannedOpportunities: 2,
-  };
-  
-  const featuredOpportunities: Opportunity[] = [];
-  const recentActivities: Activity[] = [];
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        if (userId) {
+          const userProfile = await fetchUserProfile(userId);
+          setUser(userProfile);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
 
-  // Fetch data here (useEffect, API calls, etc.)
+    loadUserProfile();
+  }, []);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <Text style={styles.welcomeText}>Welcome back, {user.firstName}!</Text>
-          <TouchableOpacity style={styles.notificationIcon}>
-            <Ionicons name="notifications-outline" size={24} color="#4CAF50" />
-          </TouchableOpacity>
+          <Image
+            source={require('../../assets/images/logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.title}>Welcome to Ethos</Text>
+          {user && (
+            <Text style={styles.subtitle}>Welcome back, {user.firstName}!</Text>
+          )}
         </View>
 
-        <VolunteerStats userData={user} />
+        {user && (
+          <View style={styles.userInfo}>
+            <Text style={styles.infoText}>Total Hours: {user.totalHours}</Text>
+            <Text style={styles.infoText}>Completed Opportunities: {user.completedOpportunities}</Text>
+            <Text style={styles.infoText}>Planned Opportunities: {user.plannedOpportunities}</Text>
+          </View>
+        )}
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Featured Opportunities</Text>
-          {featuredOpportunities.map((opportunity) => (
-            <OpportunityCard key={opportunity.id} opportunity={opportunity} />
-          ))}
-          <TouchableOpacity 
-            style={styles.viewAllButton}
-            onPress={() => router.push('/opportunities')}
-          >
-            <Text style={styles.viewAllText}>View All Opportunities</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/opportunities')}
+        >
+          <Ionicons name="search" size={24} color="#FFFFFF" style={styles.buttonIcon} />
+          <Text style={styles.buttonText}>Find Opportunities</Text>
+        </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={styles.impactButton}
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => router.push('/profile')}
         >
-          <Text style={styles.impactButtonText}>View Your Impact</Text>
+          <Ionicons name="person" size={24} color="#FFFFFF" style={styles.buttonIcon} />
+          <Text style={styles.buttonText}>View Profile</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.logoutButton]}
+          onPress={async () => {
+            await AsyncStorage.removeItem('userId');
+            await AsyncStorage.removeItem('userToken');
+            setUser(null);
+            router.replace('/');
+          }}
+        >
+          <Ionicons name="log-out" size={24} color="#FFFFFF" style={styles.buttonIcon} />
+          <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -75,69 +84,66 @@ export default function HomeScreen() {
 }
 
 
-
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  container: {
-    flex: 1,
-    paddingTop: 20, // Add padding to the top
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#FFFFFF',
+    marginBottom: 30,
   },
-  welcomeText: {
-    fontSize: 22,
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#4CAF50',
+    marginBottom: 10,
   },
-  notificationIcon: {
-    padding: 5,
+  subtitle: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
   },
-  section: {
-    backgroundColor: '#FFFFFF',
-    margin: 10,
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    marginBottom: 15,
   },
-  sectionTitle: {
+  buttonIcon: {
+    marginRight: 10,
+  },
+  buttonText: {
+    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333333',
   },
-  viewAllButton: {
-    alignItems: 'center',
-    padding: 10,
+  logoutButton: {
+    backgroundColor: '#F44336',
+    marginTop: 20,
+  },
+  userInfo: {
     backgroundColor: '#E8F5E9',
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  viewAllText: {
-    color: '#4CAF50',
-    fontWeight: 'bold',
-  },
-  impactButton: {
-    backgroundColor: '#4CAF50',
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
-    margin: 20,
+    marginBottom: 20,
   },
-  impactButtonText: {
-    color: '#FFFFFF',
+  infoText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#4CAF50',
+    marginBottom: 5,
   },
 });

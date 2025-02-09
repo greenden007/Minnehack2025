@@ -43,13 +43,18 @@ export default function Signup() {
       // Replace this with actual API call when ready
       const response: AuthResponse = await registerUser(firstName, lastName, email, password);
 
-      // Save user ID and token to AsyncStorage
-      await AsyncStorage.setItem('userId', response.user.id);
-      await AsyncStorage.setItem('userToken', response.token);
-      console.log('Signup successful:', { firstName, lastName, email });
-      Alert.alert('Success', 'Account created successfully!', [
-        { text: 'OK', onPress: () => router.replace('/(tabs)/home') }
-      ]);
+      if (response.token === "Invalid credentials") {
+        console.log('Signup unsuccessful:', { firstName, lastName, email });
+      }
+      else {
+        // Save user ID and token to AsyncStorage
+        await AsyncStorage.setItem('userId', response.user.id);
+        await AsyncStorage.setItem('userToken', response.token);
+        console.log('Signup successful:', { firstName, lastName, email });
+        Alert.alert('Success', 'Account created successfully!', [
+          { text: 'OK', onPress: () => router.replace('/(tabs)/home') }
+        ]);
+      }
     } catch (error) {
       console.error('Signup error:', error);
       Alert.alert('Error', 'Failed to create account. Please try again.');
@@ -63,6 +68,7 @@ export default function Signup() {
       <TextInput
         style={styles.input}
         placeholder="First Name"
+        placeholderTextColor="#C0C0C0"
         value={firstName}
         onChangeText={setFirstName}
       />
@@ -70,6 +76,7 @@ export default function Signup() {
       <TextInput
         style={styles.input}
         placeholder="Last Name"
+        placeholderTextColor="#C0C0C0"
         value={lastName}
         onChangeText={setLastName}
       />
@@ -77,6 +84,7 @@ export default function Signup() {
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#C0C0C0"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -87,6 +95,7 @@ export default function Signup() {
         <TextInput
           style={styles.passwordInput}
           placeholder="Password"
+          placeholderTextColor="#C0C0C0"
           value={password}
           onChangeText={setPassword}
           secureTextEntry={!showPassword}
@@ -99,6 +108,7 @@ export default function Signup() {
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
+        placeholderTextColor="#C0C0C0"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry

@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthResponse } from '../types/User';
+import { login } from '../services/userService';
+
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -9,11 +14,43 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const handleLogin = () => {
+  const validateForm = () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'All fields are required');
+      return false;
+    }
+    return true;
+  };
+
+  const handleLogin = async () => {
     // TODO: Implement login logic
+    if (!validateForm()) return;
+
     console.log('Login attempted with:', email, password);
-    // If login is successful, navigate to the home screen
-    router.replace('/(tabs)/home');
+    try {
+      // TODO: Connect to backend API for user registration
+      
+      // Placeholder for successful signup
+      // Replace this with actual API call when ready
+      const response: AuthResponse = await login(email, password);
+
+      if (response.token === "Invalid credentials") {
+        console.log('login unsuccessful:', { email });
+      }
+      else {
+        // Save user ID and token to AsyncStorage
+        await AsyncStorage.setItem('userId', response.user.id);
+        await AsyncStorage.setItem('userToken', response.token);
+        console.log('Login successful:', { email });
+        Alert.alert('Success', 'Account logged into successfully!', [
+          { text: 'OK', onPress: () => router.replace('/(tabs)/home') }
+        ]);
+        router.replace('/(tabs)/home');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', 'Failed to log into account. Please try again.');
+    }
   };
 
   return (
@@ -26,6 +63,7 @@ export default function Login() {
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#C0C0C0"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -35,6 +73,7 @@ export default function Login() {
         <TextInput
           style={styles.passwordInput}
           placeholder="Password"
+          placeholderTextColor="#C0C0C0"
           value={password}
           onChangeText={setPassword}
           secureTextEntry={!showPassword}

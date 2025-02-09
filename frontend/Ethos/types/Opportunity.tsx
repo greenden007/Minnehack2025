@@ -16,4 +16,8 @@
     status: OpportunityStatus;
     minimumAge: number;
   }
+
+  export interface OpportunityList {
+    opportunityList: Opportunity[];
+  }
   

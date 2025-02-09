@@ -9,6 +9,18 @@ import { User, AuthResponse } from '../types/User';
  */
 export const fetchUserProfile = async (userId: string): Promise<User> => {
   // Implementation here
+  // mock
+  return {
+    id: "12345",
+    email: "johndoe@example.com",
+    firstName: "John",
+    lastName: "Doe",
+    age: 30,
+    address: "123 Main St, Anytown, USA",
+    totalHours: 50,
+    completedOpportunities: 5,
+    plannedOpportunities: 2
+  };
 };
 
 /**
@@ -45,7 +57,7 @@ export const logout = async (): Promise<void> => {
  * @param userData The data for the new user.
  * @returns A Promise that resolves to the newly created User object.
  */
-export const registerUser = async (string: firstName, string: lastName, email: string, password: string): Promise<AuthResponse> => {
+export const registerUser = async (fName: string, lName: string, email: string, password: string): Promise<AuthResponse> => {
   // Implementation here
 };
 
@@ -57,4 +69,20 @@ export const registerUser = async (string: firstName, string: lastName, email: s
  */
 export const login = async (email: string, password: string): Promise<AuthResponse> => {
   // Implementation here
+  // mock
+  return {
+    user: {
+      id: "12345",
+      email: "johndoe@example.com",
+      firstName: "John",
+      lastName: "Doe",
+      age: 30,
+      address: "123 Main St, Anytown, USA",
+      totalHours: 50,
+      completedOpportunities: 5,
+      plannedOpportunities: 2
+    },
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NSIsImlhdCI6MTYxNjE2MjAxNywiZXhwIjoxNjE2MjQ4NDE3fQ.T7X9VN1xPvV7nQJ7Yl4J8J8J8J8J8J8J8J8J8J8J8J8"
+  };
+  
 };

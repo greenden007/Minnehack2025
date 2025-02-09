@@ -1,63 +1,73 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function NotFound() {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      <Ionicons name="alert-circle-outline" size={100} color="#FF6B6B" />
-      <Text style={styles.title}>Oops! Page Not Found</Text>
-      <Text style={styles.message}>
-        The page you're looking for doesn't exist or has been moved.
-      </Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.replace('/(tabs)/home')}
-      >
-        <Ionicons name="home-outline" size={24} color="#FFFFFF" />
-        <Text style={styles.buttonText}>Go to Home</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        <Image
+          source={require('../assets/images/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <Text style={styles.title}>Oops! Page Not Found</Text>
+        <Text style={styles.subtitle}>
+          The page you are looking for does not exist or has been moved.
+        </Text>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/')}
+        >
+          <Text style={styles.buttonText}>Go to Home</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
     padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginTop: 20,
-    marginBottom: 10,
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
   },
-  message: {
-    fontSize: 16,
-    color: '#666666',
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#4CAF50',
+  },
+  subtitle: {
+    fontSize: 18,
     textAlign: 'center',
     marginBottom: 30,
+    color: '#666',
   },
   button: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: '#4CAF50',
     paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingHorizontal: 40,
     borderRadius: 25,
+    marginBottom: 15,
   },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10,
   },
 });
-
