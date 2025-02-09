@@ -36,7 +36,8 @@ VolunTier is a mobile app that focuses on volunteering within a community. It ai
 ## Project Standards
 - Main branch for stable releases
 - Dev branch under main for ongoing development
-- Feature branches of form feature/[branch_name]
+- Frontend/Backend branches of form [initials]-backend
+- Feature branches of form feature/[initials]-[branch_name]
 - Pull requests required for merging into dev and main branches
 - Code review process before merging
 - Consistent coding style and documentation
