@@ -222,7 +222,7 @@ export const login = async (email: string, password: string): Promise<AuthRespon
   
 };
 
-export const getTopUsers = async (location: string): Promise<UserList> => {
+export const getTopUsers = async (): Promise<User[]> => {
   // Implementation here
   // mock
   try {
@@ -231,9 +231,6 @@ export const getTopUsers = async (location: string): Promise<UserList> => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        locationH: location,
-      }),
     })
 
     console.log(response);
@@ -250,4 +247,36 @@ export const getTopUsers = async (location: string): Promise<UserList> => {
 
 
   
+};
+
+
+
+export const updateUserProfile = async (userId: string, updatedUser: Partial<User>, currentPassword?: string): Promise<void> => {
+  try {
+    const updatePromises: Promise<void>[] = [];
+
+    if (updatedUser.email) {
+      updatePromises.push(changeUserEmail(userId, updatedUser.email));
+    }
+
+    if (updatedUser.age !== undefined) {
+      updatePromises.push(updateUserAge(userId, updatedUser.age));
+    }
+
+    if (updatedUser.address) {
+      updatePromises.push(changeUserLocation(userId, updatedUser.address));
+    }
+
+    // Password update is handled separately because it requires the current password
+    if (currentPassword) {
+      updatePromises.push(changeUserPassword(userId, currentPassword));
+    }
+
+    // Wait for all update operations to complete
+    await Promise.all(updatePromises);
+
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    throw error;
+  }
 };

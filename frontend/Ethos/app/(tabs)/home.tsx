@@ -52,7 +52,7 @@ export default function Home() {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push('/opportunities')}
+          onPress={() => router.push('./opportunities')}
         >
           <Ionicons name="search" size={24} color="#FFFFFF" style={styles.buttonIcon} />
           <Text style={styles.buttonText}>Find Opportunities</Text>
@@ -60,7 +60,7 @@ export default function Home() {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push('/profile')}
+          onPress={() => router.push('./profile')}
         >
           <Ionicons name="person" size={24} color="#FFFFFF" style={styles.buttonIcon} />
           <Text style={styles.buttonText}>View Profile</Text>
