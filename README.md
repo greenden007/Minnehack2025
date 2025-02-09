@@ -6,7 +6,6 @@ VolunTier is a mobile app that focuses on volunteering within a community. It ai
 ## Project Features/Goals
 - Users can generate and join volunteer events
 - Gamified leaderboard system for local communities (e.g., MSP downtown, Edina)
-- Set up as a 401(c)3 business to accept donations and reimburse top volunteers
 - Disaster response features:
   - Information on road closures and traffic build-up
   - Location of resources (freshwater/food shipments to local businesses)
@@ -42,6 +41,7 @@ VolunTier is a mobile app that focuses on volunteering within a community. It ai
 - Pull requests required for merging into dev and main branches
 - Code review process before merging
 - Consistent coding style and documentation
+- Regular team meetings for progress updates and planning
 
 ## Contact
 Name: Idan Talker
