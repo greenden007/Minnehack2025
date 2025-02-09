@@ -11,9 +11,13 @@ export interface User {
   completedOpportunities: number;
   plannedOpportunities: number;
 }
+
+export interface UserList {
+  userList: User[];
+}
   
 export interface AuthResponse {
-  user: User;
+  id: string;
   token: string;
 }
 

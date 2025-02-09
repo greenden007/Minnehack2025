@@ -1,129 +1,99 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text, Button, Card, Icon, Avatar } from '@rneui/themed';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useAuth } from '../../hooks/useAuth'; // Assuming you have an auth hook
+import { fetchUserProfile } from '../../services/userService'; // Assuming this function exists in userService
 import { User } from '../../types/User';
-import { fetchUserProfile } from '../../services/userService'; // Assuming you have this function
 
 export default function ProfileScreen() {
   const [user, setUser] = useState<User | null>(null);
+  const { authUser, logout } = useAuth();
 
   useEffect(() => {
-    loadUserProfile();
-  }, []);
+    if (authUser?.id) {
+      loadUserProfile(authUser.id);
+    }
+  }, [authUser]);
 
-  const loadUserProfile = async () => {
+  const loadUserProfile = async (userId: string) => {
     try {
-      const userData = await fetchUserProfile(); // Implement this function in userServices
-      setUser(userData);
+      const profile = await fetchUserProfile(userId);
+      setUser(profile);
     } catch (error) {
-      console.error('Error fetching user profile:', error);
-      // Handle error (show error message, etc.)
+      console.error('Error loading user profile:', error);
     }
   };
 
   if (!user) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <Text>Loading profile...</Text>
-      </SafeAreaView>
-    );
+    return <View style={styles.container}><Text>Loading...</Text></View>;
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.header}>
-          <Avatar
-            size="large"
-            rounded
-            icon={{ name: 'user', type: 'font-awesome' }}
-            containerStyle={styles.avatar}
-          />
-          <Text h2>{`${user.firstName} ${user.lastName}`}</Text>
-          <Text style={styles.email}>{user.email}</Text>
-        </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.name}>{user.firstName} {user.lastName}</Text>
+        <Text style={styles.email}>{user.email}</Text>
+      </View>
 
-        <Card containerStyle={styles.card}>
-          <Card.Title>Personal Information</Card.Title>
-          <Card.Divider />
-          <Text style={styles.infoText}>Age: {user.age}</Text>
-          <Text style={styles.infoText}>Address: {user.address}</Text>
-        </Card>
+      <View style={styles.infoSection}>
+        <Text style={styles.sectionTitle}>Age</Text>
+        <Text>{user.age}</Text>
+      </View>
 
-        <Card containerStyle={styles.card}>
-          <Card.Title>Volunteering Stats</Card.Title>
-          <Card.Divider />
-          <Text style={styles.infoText}>Total Hours: {user.totalHours}</Text>
-          <Text style={styles.infoText}>Completed Opportunities: {user.completedOpportunities}</Text>
-          <Text style={styles.infoText}>Planned Opportunities: {user.plannedOpportunities}</Text>
-        </Card>
+      <View style={styles.infoSection}>
+        <Text style={styles.sectionTitle}>Address</Text>
+        <Text>{user.address}</Text>
+      </View>
 
-        <TouchableOpacity style={styles.editButton}>
-          <Icon name="edit" color="#FFFFFF" />
-          <Text style={styles.editButtonText}>Edit Profile</Text>
-        </TouchableOpacity>
+      <View style={styles.infoSection}>
+        <Text style={styles.sectionTitle}>Volunteering Stats</Text>
+        <Text>Total Hours: {user.totalHours}</Text>
+        <Text>Completed Opportunities: {user.completedOpportunities}</Text>
+        <Text>Planned Opportunities: {user.plannedOpportunities}</Text>
+      </View>
 
-        <Button
-          title="Log Out"
-          icon={<Icon name="logout" color="#FFFFFF" />}
-          buttonStyle={styles.logoutButton}
-          onPress={() => {/* Implement logout logic */}}
-        />
-      </ScrollView>
-    </SafeAreaView>
+      <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
+    padding: 20,
   },
   header: {
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#4CAF50',
+    marginBottom: 20,
   },
-  avatar: {
-    backgroundColor: '#FFFFFF',
-    marginBottom: 10,
+  name: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   email: {
     fontSize: 16,
-    color: '#FFFFFF',
-    marginTop: 5,
+    color: '#666',
   },
-  card: {
-    borderRadius: 10,
-    marginHorizontal: 10,
-    marginTop: 20,
+  infoSection: {
+    marginBottom: 15,
   },
-  infoText: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  editButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFC107',
-    padding: 15,
-    borderRadius: 25,
-    marginHorizontal: 20,
-    marginTop: 20,
-  },
-  editButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+  sectionTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10,
+    marginBottom: 5,
   },
   logoutButton: {
-    backgroundColor: '#F44336',
-    borderRadius: 25,
-    marginHorizontal: 20,
+    backgroundColor: '#ff6347',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
     marginTop: 20,
-    marginBottom: 30,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

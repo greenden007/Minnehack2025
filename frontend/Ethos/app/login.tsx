@@ -33,13 +33,13 @@ export default function Login() {
       // Placeholder for successful signup
       // Replace this with actual API call when ready
       const response: AuthResponse = await login(email, password);
-
+      console.log(response);
       if (response.token === "Invalid credentials") {
         console.log('login unsuccessful:', { email });
       }
       else {
         // Save user ID and token to AsyncStorage
-        await AsyncStorage.setItem('userId', response.user.id);
+        await AsyncStorage.setItem('userId', response.id);
         await AsyncStorage.setItem('userToken', response.token);
         console.log('Login successful:', { email });
         router.replace('/(tabs)/home');

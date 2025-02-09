@@ -48,7 +48,8 @@ export default function Signup() {
       }
       else {
         // Save user ID and token to AsyncStorage
-        await AsyncStorage.setItem('userId', response.user.id);
+        console.log('response:', response);
+        await AsyncStorage.setItem('userId', response.id);
         await AsyncStorage.setItem('userToken', response.token);
         console.log('Signup successful:', { firstName, lastName, email });
         router.replace('/(tabs)/home');

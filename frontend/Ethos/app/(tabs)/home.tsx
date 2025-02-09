@@ -14,9 +14,9 @@ export default function Home() {
   useEffect(() => {
     const loadUserProfile = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (userId) {
-          const userProfile = await fetchUserProfile(userId);
+        const userToken = await AsyncStorage.getItem('userToken');
+        if (userToken) {
+          const userProfile = await fetchUserProfile(userToken);
           setUser(userProfile);
         }
       } catch (error) {

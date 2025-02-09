@@ -1,301 +1,178 @@
-// app/(tabs)/post.tsx
-
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  ScrollView, 
-  StyleSheet, 
-  Alert 
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
 import { Opportunity } from '../../types/Opportunity';
+import { createOpportunity } from '../../services/opportunityService'; // Assume this function exists in your API service
 
-// Placeholder for API service
-const submitOpportunity = async (opportunity: Partial<Opportunity>): Promise<boolean> => {
-  // Implement API call here
-  console.log('Submitting opportunity:', opportunity);
-  return true; // Return true if submission is successful
-};
-
-export default function PostScreen() {
+export default function Post() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [organizationName, setOrganizationName] = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [country, setCountry] = useState('');
-  const [postal_code, setPostalCode] = useState('');
+  const [location, setLocation] = useState('');
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [timeCommitment, setTimeCommitment] = useState('');
-  const [frequency, setFrequency] = useState('One-time');
+  const [startTime, setStartTime] = useState(new Date());
+  const [duration, setDuration] = useState('');
   const [category, setCategory] = useState('');
-  const [requiredSkills, setRequiredSkills] = useState('');
-  const [ageRequirement, setAgeRequirement] = useState('');
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [minimumAge, setMinimumAge] = useState('');
+  
 
   const handleSubmit = async () => {
-    if (!title || !description || !organizationName || !location) {
-      Alert.alert('Error', 'Please fill in all required fields');
+    if (!title || !description || !location || !duration || !category || !minimumAge) {
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
     const newOpportunity: Partial<Opportunity> = {
       title,
       description,
-      organizationInfo: {
-        name: organizationName,
-        id: organizationName + '7', // Placeholder for organization ID
-        description: '',
-        // Add other organization info as needed
-      },
-      location: {
-        address: address,
-        city: city,
-        state: state,
-        country: country,
-        postalCode: postal_code,
-        // Add other location details as needed
-      },
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-      timeCommitment: {
-        hours: parseInt(timeCommitment, 10),
-        frequency: frequency as 'One-time' | 'Daily' | 'Weekly' | 'Monthly',
-      },
-      category: [category],
-      requiredSkills: requiredSkills.split(',').map(skill => ({ skill: skill.trim(), level: 'Beginner' })),
-      ageRequirement: {
-        minimum: parseInt(ageRequirement, 10),
-      },
-      // Add other fields as needed
+      location,
+      startDate: startDate.toISOString().split('T')[0],
+      startTime: startTime.toISOString().split('T')[1].substring(0, 5),
+      duration,
+      category,
+      minimumAge: parseInt(minimumAge),
+      status: 'upcoming',
+      requiredSkills: 'none',
     };
 
     try {
-      const result = await submitOpportunity(newOpportunity);
-      if (result) {
-        Alert.alert('Success', 'Opportunity posted successfully');
-        // Reset form or navigate to another screen
-      } else {
-        Alert.alert('Error', 'Failed to post opportunity');
-      }
+      await createOpportunity(newOpportunity);
+      Alert.alert('Success', 'Opportunity posted successfully!');
+      // Reset form
+      setTitle('');
+      setDescription('');
+      setLocation('');
+      setStartDate(new Date());
+      setStartTime(new Date());
+      setDuration('');
+      setCategory('');
+      setMinimumAge('');
     } catch (error) {
       console.error('Error posting opportunity:', error);
-      Alert.alert('Error', 'An unexpected error occurred');
+      Alert.alert('Error', 'Failed to post opportunity. Please try again.');
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Post a New Volunteering Opportunity</Text>
-      
-      <Text style={styles.label}>Title*</Text>
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={setTitle}
-        placeholder="Enter opportunity title"
-      />
-
-      <Text style={styles.label}>Description*</Text>
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        value={description}
-        onChangeText={setDescription}
-        placeholder="Describe the volunteering opportunity"
-        multiline
-      />
-
-      <Text style={styles.label}>Organization Name*</Text>
-      <TextInput
-        style={styles.input}
-        value={organizationName}
-        onChangeText={setOrganizationName}
-        placeholder="Enter organization name"
-      />
-
-      <Text style={styles.label}>Address*</Text>
-      <TextInput
-        style={styles.input}
-        value={address}
-        onChangeText={setAddress}
-        placeholder="Enter address"
-      />
-
-      <Text style={styles.label}>City*</Text>
-      <TextInput
-        style={styles.input}
-        value={city}
-        onChangeText={setCity}
-        placeholder="Enter city"
-      />
-
-      <Text style={styles.label}>State*</Text>
-      <TextInput
-        style={styles.input}
-        value={state}
-        onChangeText={setState}
-        placeholder="Enter state"
-      />
-
-      <Text style={styles.label}>Country*</Text>
-      <TextInput
-        style={styles.input}
-        value={country}
-        onChangeText={setCountry}
-        placeholder="Enter country"
-      />
-
-      <Text style={styles.label}>Postal Code*</Text>
-      <TextInput
-        style={styles.input}
-        value={postal_code}
-        onChangeText={setPostalCode}
-        placeholder="Enter postal code"
-      />
-
-      <Text style={styles.label}>Start Date</Text>
-      <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
-        <Text style={styles.dateInput}>{startDate.toLocaleDateString()}</Text>
-      </TouchableOpacity>
-      {showStartDatePicker && (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.title}>Post a New Opportunity</Text>
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Title"
+          placeholderTextColor="#C0C0C0"
+          value={title}
+          onChangeText={setTitle}
+        />
+        
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          placeholder="Description"
+          placeholderTextColor="#C0C0C0"
+          value={description}
+          onChangeText={setDescription}
+          multiline
+        />
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Location: address, city, state, country, zip"
+          placeholderTextColor="#C0C0C0"
+          value={location}
+          onChangeText={setLocation}
+        />
+        
+        <Text style={styles.label}>Start Date:</Text>
         <DateTimePicker
           value={startDate}
           mode="date"
           display="default"
-          onChange={(event, selectedDate) => {
-            setShowStartDatePicker(false);
-            if (selectedDate) setStartDate(selectedDate);
-          }}
+          onChange={(event, selectedDate) => setStartDate(selectedDate || startDate)}
         />
-      )}
-
-      <Text style={styles.label}>End Date</Text>
-      <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
-        <Text style={styles.dateInput}>{endDate.toLocaleDateString()}</Text>
-      </TouchableOpacity>
-      {showEndDatePicker && (
+        
+        <Text style={styles.label}>Start Time:</Text>
         <DateTimePicker
-          value={endDate}
-          mode="date"
+          value={startTime}
+          mode="time"
           display="default"
-          onChange={(event, selectedDate) => {
-            setShowEndDatePicker(false);
-            if (selectedDate) setEndDate(selectedDate);
-          }}
+          onChange={(event, selectedTime) => setStartTime(selectedTime || startTime)}
+          style={{ marginBottom: 20 }}
         />
-      )}
-
-      <Text style={styles.label}>Time Commitment (hours)</Text>
-      <TextInput
-        style={styles.input}
-        value={timeCommitment}
-        onChangeText={setTimeCommitment}
-        placeholder="Enter time commitment in hours"
-        keyboardType="numeric"
-      />
-
-      <Text style={styles.label}>Frequency</Text>
-      <Picker
-        selectedValue={frequency}
-        onValueChange={(itemValue) => setFrequency(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="One-time" value="One-time" />
-        <Picker.Item label="Daily" value="Daily" />
-        <Picker.Item label="Weekly" value="Weekly" />
-        <Picker.Item label="Monthly" value="Monthly" />
-      </Picker>
-
-      <Text style={styles.label}>Category</Text>
-      <TextInput
-        style={styles.input}
-        value={category}
-        onChangeText={setCategory}
-        placeholder="Enter category"
-      />
-
-      <Text style={styles.label}>Required Skills (comma-separated)</Text>
-      <TextInput
-        style={styles.input}
-        value={requiredSkills}
-        onChangeText={setRequiredSkills}
-        placeholder="Enter required skills"
-      />
-
-      <Text style={styles.label}>Minimum Age Requirement</Text>
-      <TextInput
-        style={styles.input}
-        value={ageRequirement}
-        onChangeText={setAgeRequirement}
-        placeholder="Enter minimum age"
-        keyboardType="numeric"
-      />
-
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Submit Opportunity</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Duration (e.g., 2 hours)"
+          placeholderTextColor="#C0C0C0"
+          value={duration}
+          onChangeText={setDuration}
+        />
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Category"
+          placeholderTextColor="#C0C0C0"
+          value={category}
+          onChangeText={setCategory}
+        />
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Minimum Age"
+          placeholderTextColor="#C0C0C0"
+          value={minimumAge}
+          onChangeText={setMinimumAge}
+          keyboardType="numeric"
+        />
+        
+        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Post Opportunity</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  scrollContent: {
     padding: 20,
-    paddingTop: 40,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: 'center',
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom: 5,
+    color: '#4CAF50',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    backgroundColor: '#FFFFFF',
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
   },
-  dateInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: '#333',
   },
-  picker: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    marginBottom: 15,
-  },
-  submitButton: {
-    backgroundColor: '#007AFF',
+  button: {
+    backgroundColor: '#4CAF50',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 20,
   },
-  submitButtonText: {
-    color: '#fff',
+  buttonText: {
+    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
   },
