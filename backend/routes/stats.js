@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const auth = require('../middleware/auth');
 const User = require('../models/User');
 
 router.get('/leaderboard', async (req, res) => {
     try{
         const leaderboard = await User.getLeaderboardByLocation(req.user.location);
-        res.json(leaderboard);
+        return res.status(200).json(leaderboard);
     } catch (err) {
-        res.status(500).send('Server Error');
+        return res.status(500).send('Server Error');
     }
 });
 

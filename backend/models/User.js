@@ -55,5 +55,13 @@ userSchema.statics.updateLocation = async function(userId, newLocation) {
     }
 };
 
+userSchema.statics.updateAge = async function(userId, newAge) {
+    try {
+        return await User.findByIdAndUpdate(userId, { age: newAge }, { new: true });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 
 module.exports = mongoose.model('User', userSchema);

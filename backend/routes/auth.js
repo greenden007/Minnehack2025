@@ -7,7 +7,7 @@ require('dotenv').config();
 
 router.post("/register", async (req, res) => {
     try {
-        const { firstName, lastName, email, password, location, age, userType } = req.body;
+        const { firstName, lastName, email, password, location } = req.body;
         let user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({ message: 'User already exists' });
@@ -21,9 +21,7 @@ router.post("/register", async (req, res) => {
             lastName,
             email,
             password: hashedPassword,
-            location,
-            age,
-            userType
+            location
         });
 
         await user.save();
@@ -37,7 +35,7 @@ router.post("/register", async (req, res) => {
 
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '48h' }, (err, token) => {
             if (err) throw err;
-            res.json({ token });
+            res.status(200).json({ token, "id": user.id });
         });
     } catch (err) {
         res.status(500).json({ message: "Server error"});
@@ -67,7 +65,7 @@ router.post('/login', async (req, res) => {
 
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '48h' }, (err, token) => {
             if (err) throw err;
-            res.json({ token });
+            res.status(200).json({ token, "id": user.id });
         });
     } catch (err) {
         res.status(500).json({ message: "Server error" });
