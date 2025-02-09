@@ -24,17 +24,11 @@ router.post('/', auth, async (req, res) => {
             if (response.data.results.length === 0) {
                 return res.status(400).json({ msg: 'Invalid location' });
             }
-
-            const { lat, lng } = response.data.results[0].geometry.location;
             
             const event = new Event({
                 title,
                 description,
                 location,
-                coordinates: {
-                    type: 'Point',
-                    coordinates: [lng, lat] // MongoDB uses [longitude, latitude] order
-                },
                 date,
                 startTime,
                 endTime,
@@ -99,63 +93,74 @@ router.get('/nearby', async (req, res) => {
             return res.status(400).json({ msg: 'Address is required' });
         }
 
-        // Geocode the provided address
-        try {
-            const response = await googleMapsClient.geocode({
-                params: {
-                    address: address,
-                    key: process.env.GOOGLE_MAPS_API_KEY
-                }
-            });
-
-            if (response.data.results.length === 0) {
-                return res.status(400).json({ msg: 'Invalid address' });
-            }
-
-            const { lat, lng } = response.data.results[0].geometry.location;
-
-            // Convert 20 miles to meters (1 mile = 1609.34 meters)
-            const radius = 20 * 1609.34;
-
-            // Find events within the radius
-            const nearbyEvents = await Event.find({
-                coordinates: {
-                    $near: {
-                        $geometry: {
-                            type: 'Point',
-                            coordinates: [lng, lat]
-                        },
-                        $maxDistance: radius
-                    }
-                },
-                status: 'upcoming' // Only show upcoming events
-            })
+        // Get all events
+        const allEvents = await Event.find({ status: 'upcoming' })
             .populate('creator', ['firstName', 'lastName'])
             .populate('participants', ['firstName', 'lastName']);
 
-            // Calculate distance for each event
-            const eventsWithDistance = nearbyEvents.map(event => {
-                const eventObj = event.toObject();
-                const distance = calculateDistance(
-                    lat,
-                    lng,
-                    event.coordinates.coordinates[1],
-                    event.coordinates.coordinates[0]
-                );
-                return {
-                    ...eventObj,
-                    distance: Math.round(distance * 10) / 10 // Round to 1 decimal place
-                };
-            });
+        // Get coordinates for the search address
+        const searchLocation = await googleMapsClient.geocode({
+            params: {
+                address: address,
+                key: process.env.GOOGLE_MAPS_API_KEY
+            }
+        });
 
-            // Sort by distance
-            eventsWithDistance.sort((a, b) => a.distance - b.distance);
-
-            res.json(eventsWithDistance);
-        } catch (error) {
-            console.error('Geocoding error:', error);
-            return res.status(400).json({ msg: 'Error processing address' });
+        if (searchLocation.data.results.length === 0) {
+            return res.status(400).json({ msg: 'Invalid search address' });
         }
+
+        const searchPoint = searchLocation.data.results[0].geometry.location;
+
+        // Calculate distances and filter events
+        const eventsWithDistance = await Promise.all(allEvents.map(async (event) => {
+            try {
+                const eventLocation = await googleMapsClient.geocode({
+                    params: {
+                        address: event.location,
+                        key: process.env.GOOGLE_MAPS_API_KEY
+                    }
+                });
+
+                if (eventLocation.data.results.length === 0) {
+                    return null;
+                }
+
+                const eventPoint = eventLocation.data.results[0].geometry.location;
+                
+                // Calculate distance using Google Maps Distance Matrix API
+                const distanceMatrix = await googleMapsClient.distancematrix({
+                    params: {
+                        origins: [`${searchPoint.lat},${searchPoint.lng}`],
+                        destinations: [`${eventPoint.lat},${eventPoint.lng}`],
+                        key: process.env.GOOGLE_MAPS_API_KEY
+                    }
+                });
+
+                if (distanceMatrix.data.rows[0].elements[0].status === 'OK') {
+                    const distanceInMiles = distanceMatrix.data.rows[0].elements[0].distance.value / 1609.34; // Convert meters to miles
+                    
+                    if (distanceInMiles <= 20) {
+                        const eventObj = event.toObject();
+                        return {
+                            ...eventObj,
+                            distance: Math.round(distanceInMiles * 10) / 10
+                        };
+                    }
+                }
+                return null;
+            } catch (error) {
+                console.error('Error processing event location:', error);
+                return null;
+            }
+        }));
+
+        // Filter out null values and sort by distance
+        const nearbyEvents = eventsWithDistance
+            .filter(event => event !== null)
+            .sort((a, b) => a.distance - b.distance);
+
+        res.json(nearbyEvents);
     } catch (err) {
         console.error('Server error:', err);
         res.status(500).send('Server Error');
