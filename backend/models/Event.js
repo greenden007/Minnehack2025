@@ -13,6 +13,17 @@ const eventSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
+  coordinates: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point'
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true
+    }
+  },
   date: { 
     type: Date, 
     required: true 
@@ -56,5 +67,8 @@ const eventSchema = new mongoose.Schema({
     required: true 
   }
 });
+
+// Create a geospatial index on the coordinates field
+eventSchema.index({ coordinates: '2dsphere' });
 
 module.exports = mongoose.model('Event', eventSchema);
