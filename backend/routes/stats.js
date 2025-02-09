@@ -57,5 +57,15 @@ router.put('/update-location', auth, async (req, res) => {
     }
 });
 
+// Get user stats
+router.get('/stats', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        return res.status(200).json(user);
+    } catch (err) {
+        return res.status(500).send({ message: "Server error" });
+    }
+});
+
 
 module.exports = router;

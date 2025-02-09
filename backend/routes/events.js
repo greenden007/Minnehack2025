@@ -317,4 +317,33 @@ router.put('/:id/status', auth, async (req, res) => {
     }
 });
 
+// Update event status
+router.put('/:id/status', auth, async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id);
+        
+        if (!event) {
+            return res.status(404).json({ msg: 'Event not found' });
+        }
+
+        const { status } = req.body;
+        
+        // Validate status
+        if (!['upcoming', 'ongoing', 'completed', 'cancelled'].includes(status)) {
+            return res.status(400).json({ msg: 'Invalid status' });
+        }
+
+        event.status = status;
+        await event.save();
+
+        const updatedEvent = await Event.findById(req.params.id)
+            .populate('creator', ['firstName', 'lastName'])
+            .populate('participants', ['firstName', 'lastName']);
+
+        res.json(updatedEvent);
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
 module.exports = router;

@@ -53,5 +53,4 @@ userSchema.statics.updateLocation = async function(userId, newLocation) {
 };
 
 
-
 module.exports = mongoose.model('User', userSchema);
