@@ -7,7 +7,7 @@ require('dotenv').config();
 
 router.post("/register", async (req, res) => {
     try {
-        const { firstName, lastName, email, password, location } = req.body;
+        const { firstName, lastName, email, password, location, userType } = req.body;
         let user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({ message: 'User already exists' });
