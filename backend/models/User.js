@@ -8,6 +8,13 @@ const userSchema = new mongoose.Schema({
     volunteerHours: { type: Number, default: 0 },
     userType: { type: String, enum: ['citizen', 'government'], default: 'citizen' },
     createdAt: { type: Date, default: Date.now },
-})
+});
+
+userSchema.statics.getLeaderboardByLocation = async function() {
+    const users = await this.find({ location, userType: 'citizen' })
+    .sort({ volunteerHours: -1 })
+    .limit(10);
+    return users;
+};
 
 module.exports = mongoose.model('User', userSchema);
