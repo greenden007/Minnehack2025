@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Opportunity } from '../../types/Opportunity';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createOpportunity } from '../../services/opportunityService'; // Assume this function exists in your API service
+import { fetchUserProfile } from '../../services/userService';
+import { User } from '../../types/User';
 
 export default function Post() {
   const [title, setTitle] = useState('');
@@ -14,29 +17,48 @@ export default function Post() {
   const [duration, setDuration] = useState('');
   const [category, setCategory] = useState('');
   const [minimumAge, setMinimumAge] = useState('');
+  const [userToken, setUserToken] = useState<string>("");
+  const [user, setUser] = useState<User | null>(null);
   
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const userToken = await AsyncStorage.getItem('userToken');
+        if (userToken) {
+          const userProfile = await fetchUserProfile(userToken);
+          setUserToken(userToken);
+          setUser(userProfile);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+    loadUserProfile();
+  }, []);
 
   const handleSubmit = async () => {
     if (!title || !description || !location || !duration || !category || !minimumAge) {
-      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    const newOpportunity: Partial<Opportunity> = {
+    const newOpportunity: Opportunity = {
+      posterId: user?.id || '',
       title,
       description,
       location,
       startDate: startDate.toISOString().split('T')[0],
       startTime: startTime.toISOString().split('T')[1].substring(0, 5),
-      duration,
-      category,
-      minimumAge: parseInt(minimumAge),
+      duration: parseInt(duration),
       status: 'upcoming',
+      minimumAge: parseInt(minimumAge),
       requiredSkills: 'none',
     };
 
+    
+
     try {
-      await createOpportunity(newOpportunity);
+      console.log(newOpportunity);
+      await createOpportunity(newOpportunity, userToken);
       Alert.alert('Success', 'Opportunity posted successfully!');
       // Reset form
       setTitle('');
@@ -102,7 +124,7 @@ export default function Post() {
         
         <TextInput
           style={styles.input}
-          placeholder="Duration (e.g., 2 hours)"
+          placeholder="Duration (e.g., 2)"
           placeholderTextColor="#C0C0C0"
           value={duration}
           onChangeText={setDuration}

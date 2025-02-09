@@ -1,6 +1,6 @@
 // services/opportunityService.tsx
 
-import { Opportunity } from "@/types/Opportunity";
+import { Opportunity, OpportunityList } from "@/types/Opportunity";
 
 export const fetchOpportunities = async (token: string): Promise<OpportunityList> => {
     // Implement API call to fetch opportunities
@@ -20,11 +20,11 @@ export const fetchOpportunities = async (token: string): Promise<OpportunityList
         } else {
           throw new Error(`Failed to retrive user. Status: ${response.status}`);
         }
-      } catch (error) {
-        console.error('Error retriving user:', error);
-        throw error;
-      }
+    } catch (error) {
+    console.error('Error retriving user:', error);
+    throw error;
     }
+    
 };
 
 

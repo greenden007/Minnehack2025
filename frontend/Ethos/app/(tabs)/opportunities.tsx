@@ -5,6 +5,10 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Opportunity, OpportunityList } from '../../types/Opportunity';
 import { fetchOpportunities } from '../../services/opportunityService'; // Assume this function exists in your API service
+import { User } from '../../types/User'; // Adjust the import path as needed
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchUserProfile } from '../../services/userService'; // Adjust the import path as needed
+
 
 const OpportunityItem: React.FC<{ opportunity: Opportunity }> = ({ opportunity }) => {
   return (
@@ -17,7 +21,6 @@ const OpportunityItem: React.FC<{ opportunity: Opportunity }> = ({ opportunity }
       </Text>
       <Text style={styles.opportunityDetails}>Duration: {opportunity.duration}</Text>
       <View style={styles.categoryContainer}>
-        <Text style={styles.category}>{opportunity.category}</Text>
         <Text style={[styles.status, { color: opportunity.status === 'upcoming' ? '#4CAF50' : '#F44336' }]}>
           {opportunity.status}
         </Text>
@@ -31,8 +34,24 @@ export default function Opportunities() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [userToken, setUserToken] = useState<string>("");
 
   useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const userToken = await AsyncStorage.getItem('userToken');
+        if (userToken) {
+          const userProfile = await fetchUserProfile(userToken);
+          setUser(userProfile);
+          setUserToken(userToken);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    loadUserProfile();
     loadOpportunities();
   }, []);
 
@@ -40,7 +59,7 @@ export default function Opportunities() {
     setIsLoading(true);
     setError(null);
     try {
-      const result: OpportunityList = await fetchOpportunities();
+      const result: OpportunityList = await fetchOpportunities(userToken); // Assuming userToken is defined
       setOpportunities(result.opportunityList);
     } catch (err) {
       setError('Failed to load opportunities. Please try again.');
@@ -80,7 +99,6 @@ export default function Opportunities() {
       <FlatList
         data={opportunities}
         renderItem={({ item }) => <OpportunityItem opportunity={item} />}
-        keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         refreshing={isLoading}
         onRefresh={loadOpportunities}
