@@ -15,7 +15,7 @@ export default function Post() {
   const [startDate, setStartDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
   const [duration, setDuration] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setRequiredSkills] = useState('');
   const [minimumAge, setMinimumAge] = useState('');
   const [userToken, setUserToken] = useState<string>("");
   const [user, setUser] = useState<User | null>(null);
@@ -67,7 +67,7 @@ export default function Post() {
       setStartDate(new Date());
       setStartTime(new Date());
       setDuration('');
-      setCategory('');
+      setRequiredSkills('');
       setMinimumAge('');
     } catch (error) {
       console.error('Error posting opportunity:', error);
@@ -132,10 +132,10 @@ export default function Post() {
         
         <TextInput
           style={styles.input}
-          placeholder="Category"
+          placeholder="Required Skills"
           placeholderTextColor="#C0C0C0"
           value={category}
-          onChangeText={setCategory}
+          onChangeText={setRequiredSkills}
         />
         
         <TextInput
